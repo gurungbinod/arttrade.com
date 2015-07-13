@@ -2,14 +2,17 @@ package com.artTrade.app.repository;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.artTrade.app.domain.EventOrg;
 
+@Repository
 public class EventOrgRepositoryImpl implements EventOrgRepository{
 	private static final Logger logger = LoggerFactory.getLogger(EventOrgRepositoryImpl.class);
 	
@@ -63,6 +66,18 @@ public class EventOrgRepositoryImpl implements EventOrgRepository{
             logger.info("Event Organiser deleted successfully, Event Org details="+eo);
         }
 		
+	}
+
+	@Override
+	public List<EventOrg> getEventOrgByEmail(String email) {
+		Session session = sf.getCurrentSession();
+		logger.info("Get Event Organiser By Email "+email);
+		
+		Query q = session.createQuery("FROM EventOrg e WHERE e.email = :email");
+		q.setString("email", email);
+		List<EventOrg> eoList = q.list();
+		logger.info("Retrieved Event Organiser = "+eoList);
+		return eoList;
 	}
 
 }

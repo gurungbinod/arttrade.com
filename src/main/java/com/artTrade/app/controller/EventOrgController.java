@@ -1,5 +1,7 @@
 package com.artTrade.app.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -21,8 +23,8 @@ import com.artTrade.app.services.EventOrgService;
 public class EventOrgController {
 	private static final Logger logger = LoggerFactory.getLogger(EventOrgRepositoryImpl.class);
 	
-	/*@Autowired
-	EventOrgService eoService;*/
+	@Autowired
+	EventOrgService eoService;
 	
 	@RequestMapping(value="/eventOrg", method = RequestMethod.GET)
 	public String eventOrgSignUpForm(Model m) {
@@ -38,7 +40,13 @@ public class EventOrgController {
 			logger.info("Number of Errors: " + result.getErrorCount());
 			return "eventOrgSignup";
 		}
-		//eoService.addEventOrg(eo);
+		List<EventOrg> existEo = eoService.getEventOrgByEmail(eo.getEmail());
+		if (existEo != null && existEo.size() > 0){
+			result.rejectValue("email", "error.user", "An account already exists for this email.");
+			return "eventOrgSignup";
+		}
+		eo.setPassword(eoService.encryptPassword(eo.getPassword()));
+		eoService.addEventOrg(eo);
 		logger.info("Validation Passed. Return Sign up Success");
 		
 		return "signupSuccess";

@@ -9,5 +9,7 @@ public interface EventOrgService {
     public void updateEventOrg(EventOrg eo);
     public List<EventOrg> listEventOrg();
     public EventOrg getEventOrgById(int id);
+    public List<EventOrg> getEventOrgByEmail(String email);
     public void removeEventOrg(int id);
+    public String encryptPassword(String password);
 }
